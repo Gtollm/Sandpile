@@ -58,7 +58,7 @@ Vector<T>::~Vector() {
 
 // Iterators:
 template <typename T>
-Vector<T>::Iterator::Iterator(T* obj) : current_(obj) {}
+Vector<T>::Iterator::Iterator(pointer obj) : current_(obj) {}
 
 template <typename T>
 Vector<T>::Iterator& Vector<T>::Iterator::operator++() {
@@ -67,8 +67,54 @@ Vector<T>::Iterator& Vector<T>::Iterator::operator++() {
 }
 
 template <typename T>
+Vector<T>::Iterator& Vector<T>::Iterator::operator+=(const Iterator& other) {
+  this->current_ += other.current_;
+  return *this;
+}
+
+template <typename T>
+Vector<T>::Iterator Vector<T>::Iterator::operator+(
+    const Iterator& other) const {
+  return Iterator(this->current_ + other.current_);
+}
+
+template <typename T>
+Vector<T>::Iterator& Vector<T>::Iterator::operator+=(difference_type size) {
+  this->current_ += size;
+  return *this;
+}
+
+template <typename T>
+Vector<T>::Iterator Vector<T>::Iterator::operator+(
+    difference_type size) const {
+  return Iterator(this->current_ + size);
+}
+
+template <typename T>
 Vector<T>::Iterator& Vector<T>::Iterator::operator--() {
   --this->current_;
+  return *this;
+}
+
+template <typename T>
+Vector<T>::Iterator& Vector<T>::Iterator::operator-=(const Iterator& other) {
+  this->current_ -= other.current_;
+  return *this;
+}
+
+template <typename T>
+Vector<T>::Iterator::difference_type Vector<T>::Iterator::operator-(
+    const Iterator& other) const {
+  return this->current_ - other.current_;
+}
+template <typename T>
+Vector<T>::Iterator Vector<T>::Iterator::operator-(
+    difference_type size) const {
+  return Iterator(this->current_ - size);
+}
+template <typename T>
+Vector<T>::Iterator& Vector<T>::Iterator::operator-=(difference_type size) {
+  this->current_ -= size;
   return *this;
 }
 
@@ -79,64 +125,80 @@ T& Vector<T>::Iterator::operator*() {
 
 template <typename T>
 bool Vector<T>::Iterator::operator==(const Iterator& obj) const {
-  return (*this->current_) == (*obj.current_);
+  return this->current_ == obj.current_;
 }
 
 template <typename T>
 bool Vector<T>::Iterator::operator!=(const Iterator& obj) const {
-  return (*this->current_) != (*obj.current_);
+  return this->current_ != obj.current_;
 }
 
 template <typename T>
-template <class InputIterator>
-std::size_t Vector<T>::Iterator::distance(const InputIterator& begin,
-                                          const InputIterator& end) {
-  std::size_t size = 0;
-  for (Iterator it = begin; it != end; ++it) {
-    ++size;
-  }
-  return size;
+bool Vector<T>::Iterator::operator<(const Iterator& other) const {
+  return this->current_ < other.current_;
+}
+
+template <typename T>
+bool Vector<T>::Iterator::operator>(const Iterator& other) const {
+  return this->current_ > other.current_;
+}
+
+template <typename T>
+bool Vector<T>::Iterator::operator<=(const Iterator& other) const {
+  return this->current_ <= other.current_;
+}
+
+template <typename T>
+bool Vector<T>::Iterator::operator>=(const Iterator& other) const {
+  return this->current_ >= other.current_;
+}
+
+template <typename T>
+std::size_t Vector<T>::Iterator::distance(const Iterator& begin,
+                                          const Iterator& end) {
+  return end - begin;
 }
 
 template <typename T>
 template <class InputIterator>
 Vector<T>::Vector(const InputIterator& begin, const InputIterator& end) {
-  std::size_t size = distance(begin, end);
+  std::size_t size = Iterator::distance(begin, end);
   this->capacity_ = size;
   this->size_ = 0;
   this->data_ = new T[size];
   for (InputIterator it = begin; it != end; ++it) {
-    this->data_[this->size_++] = *it;
+    this->data_[this->size_++] = (*it);
   }
 }
+
 template <typename T>
 Vector<T>::Iterator Vector<T>::begin() {
-  return Vector<T>::Iterator(&this->data_[0]);
+  return Vector<T>::Iterator(Iterator(this->data_));
 }
 
 template <typename T>
 const Vector<T>::Iterator Vector<T>::begin() const {
-  return Vector<T>::Iterator(&this->data_[0]);
+  return Vector<T>::Iterator(Iterator(this->data_));
 }
 
 template <typename T>
 Vector<T>::Iterator Vector<T>::end() {
-  return Vector<T>::Iterator(&this->data_[this->size_ - 1]);
+  return Vector<T>::Iterator(Iterator(this->data_ + this->size_));
 }
 
 template <typename T>
 const Vector<T>::Iterator Vector<T>::end() const {
-  return Vector<T>::Iterator(&this->data_[this->size_ - 1]);
+  return Vector<T>::Iterator(Iterator(this->data_ + this->size_));
 }
 
 template <typename T>
 const Vector<T>::Iterator Vector<T>::cbegin() const {
-  return Vector<T>::Iterator(&this->data_[0]);
+  return Vector<T>::Iterator(Iterator(this->data_));
 }
 
 template <typename T>
 const Vector<T>::Iterator Vector<T>::cend() const {
-  return Vector<T>::Iterator(&this->data_[this->size_ - 1]);
+  return Vector<T>::Iterator(Iterator(this->data_ + this->size_));
 }
 
 // Capacity:
@@ -251,26 +313,25 @@ const T* Vector<T>::data() const {
 // Modifiers:
 
 template <typename T>
-template <class InputIterator>
-void Vector<T>::assign(InputIterator begin, InputIterator end) {
+void Vector<T>::assign(Iterator begin, Iterator end) {
   this->clear();
   std::size_t size = distance(begin, end);
   if (size <= this->capacity_) {
     this->size_ = 0;
-    for (InputIterator it = begin; it != end; ++it) {
-      this->data_[this->size_++] = *it;
+    for (Iterator it = begin; it != end; ++it) {
+      this->data_[this->size_++] = (*it);
     }
-    return *this;
+    return;
   }
 
   this->capacity_ = size;
   this->data_ = new T[size];
   delete[] this->data_;
   this->size_ = 0;
-  for (InputIterator it = begin; it != end; ++it) {
+  for (Iterator it = begin; it != end; ++it) {
     this->data_[this->size_++] = *it;
   }
-  return *this;
+  return;
 }
 
 template <typename T>
@@ -281,7 +342,7 @@ void Vector<T>::assign(std::size_t size, const T& val) {
     for (std::size_t i = 0; i < size; ++i) {
       this->data_[i] = val;
     }
-    return *this;
+    return;
   }
   delete[] this->data_;
   this->size_ = size;
@@ -290,7 +351,7 @@ void Vector<T>::assign(std::size_t size, const T& val) {
   for (std::size_t i = 0; i < size; ++i) {
     this->data_[i] = val;
   }
-  return *this;
+  return;
 }
 
 template <typename T>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iterator>
 
 template <typename T>
 class Vector {
@@ -14,18 +15,36 @@ class Vector {
   // Iterators:
   class Iterator {
    public:
-    Iterator(T* obj);
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = T;
+    using difference_type = std::ptrdiff_t;
+    using pointer = T*;
+    using reference = T&;
+
+    Iterator(pointer obj);
     Iterator& operator++();
+    Iterator operator+(const Iterator& other) const;
+    Iterator& operator+=(const Iterator& other);
+    Iterator operator+(difference_type size) const;
+    Iterator& operator+=(difference_type size);
     Iterator& operator--();
-    T& operator*();
+    difference_type operator-(const Iterator& other) const;
+    Iterator operator-(difference_type size) const;
+    Iterator& operator-=(const Iterator& other);
+    Iterator& operator-=(difference_type size);
+    reference operator*();
+    pointer operator->();
     bool operator==(const Iterator& obj) const;
     bool operator!=(const Iterator& obj) const;
-    template <class InputIterator>
-    static std::size_t distance(const InputIterator& begin,
-                                const InputIterator& end);
+    bool operator<(const Iterator& other) const;
+    bool operator>(const Iterator& other) const;
+    bool operator<=(const Iterator& other) const;
+    bool operator>=(const Iterator& other) const;
+    reference operator[](difference_type n) const { return *(current_ + n); }
+    static std::size_t distance(const Iterator& begin, const Iterator& end);
 
    private:
-    T* current_;
+    pointer current_;
   };
   template <class InputIterator>
   Vector(const InputIterator& begin, const InputIterator& end);
@@ -55,8 +74,7 @@ class Vector {
   T* data();
   const T* data() const;
   // Modifiers:
-  template <class InputIterator>
-  void assign(InputIterator begin, InputIterator end);
+  void assign(Iterator begin, Iterator end);
   void assign(std::size_t size, const T& val);
   void clear();
   void push_back(const T& obj);
