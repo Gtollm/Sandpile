@@ -154,14 +154,10 @@ std::size_t Vector<T>::Vector<T>::max_size() const {
 template <typename T>
 void Vector<T>::resize(std::size_t size, const T& val) {
   this->reserve(size);
-  this->size_ = size;
-  for (std::size_t i = 0; i < size; ++i) {
-    if (i < val.size()) {
-      this->data_[i] = val.elements_[i];
-    } else {
-      this->data_[i] = T();
-    }
+  for (std::size_t i = this->size_; i < size; ++i) {
+    this->data_[i] = val;
   }
+  this->size_ = size;
 }
 
 template <typename T>
