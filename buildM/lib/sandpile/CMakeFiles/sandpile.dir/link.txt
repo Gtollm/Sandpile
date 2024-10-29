@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libsandpile.a CMakeFiles/sandpile.dir/sandpile.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libsandpile.a

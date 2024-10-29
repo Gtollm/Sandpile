@@ -1,12 +1,11 @@
 #include <cmath>
 #include <cstddef>
-#include <iostream>
 #include <limits>
-#include <ostream>
 #include <stdexcept>
 #include <utility>
 
 #include "vector.hpp"
+
 namespace utils {
 
 constexpr std::size_t kMinSize = 8;

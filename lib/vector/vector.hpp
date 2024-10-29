@@ -97,4 +97,5 @@ class Vector {
 };
 
 }  // namespace utils
+
 #include "vector.tpp"

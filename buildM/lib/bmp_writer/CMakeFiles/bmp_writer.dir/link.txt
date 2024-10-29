@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libbmp_writer.a CMakeFiles/bmp_writer.dir/bmp.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libbmp_writer.a
