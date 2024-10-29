@@ -1,10 +1,13 @@
 #include <cmath>
 #include <cstddef>
+#include <iostream>
 #include <limits>
+#include <ostream>
 #include <stdexcept>
 #include <utility>
 
 #include "vector.hpp"
+namespace utils {
 
 constexpr std::size_t kMinSize = 8;
 constexpr double kSizeMultiplyer = 2;
@@ -15,10 +18,18 @@ template <typename T>
 Vector<T>::Vector() : size_(0), data_(nullptr), capacity_(0) {}
 
 template <typename T>
-Vector<T>::Vector(std::size_t size)
+Vector<T>::Vector(std::size_t size, const T& val)
     : size_(size), data_(new T[size]), capacity_(size) {
   for (std::size_t i = 0; i < size; ++i) {
     this->data_[i] = T();
+  }
+}
+
+template <typename T>
+Vector<T>::Vector(const std::initializer_list<T>& list)
+    : size_(list.size()), data_(new T[list.size()]), capacity_(list.size()) {
+  for (std::size_t i = 0; i < list.size(); ++i) {
+    this->data_[i] = *(list.begin() + i);
   }
 }
 
@@ -47,6 +58,26 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& obj) {
   this->capacity_ = obj.size_;
   for (std::size_t i = 0; i < obj.size_; ++i) {
     this->data_[i] = obj.data_[i];
+  }
+  return *this;
+}
+
+template <typename T>
+Vector<T>& Vector<T>::operator=(const std::initializer_list<T>& list) {
+  this->clear();
+  if (list.size() <= this->capacity_) {
+    this->size_ = list.size();
+    for (std::size_t i = 0; i < list.size(); ++i) {
+      this->data_[i] = *(list.begin() + i);
+    }
+    return *this;
+  }
+  delete[] this->data_;
+  this->size_ = list.size();
+  this->data_ = new T[list.size()];
+  this->capacity_ = list.size();
+  for (std::size_t i = 0; i < list.size(); ++i) {
+    this->data_[i] = *(list.begin() + i);
   }
   return *this;
 }
@@ -209,7 +240,7 @@ std::size_t Vector<T>::size() const {
 }
 
 template <typename T>
-std::size_t Vector<T>::Vector<T>::max_size() const {
+std::size_t Vector<T>::max_size() const {
   return std::numeric_limits<std::size_t>::max() / sizeof(T);
 }
 
@@ -369,7 +400,7 @@ void Vector<T>::push_back(const T& obj) {
   } else if (this->size_ == this->capacity_) {
     reserve(kSizeMultiplyer * this->capacity_);
   }
-  this->data_[++this->size_] = obj;
+  this->data_[this->size_++] = obj;
 }
 
 template <typename T>
@@ -377,7 +408,7 @@ void Vector<T>::pop_back() {
   if (this->size_ == 0) {
     throw std::out_of_range("Trying to pop from empty Vector.");
   }
-  this->data_[--this->size_].~T();
+  this->data_[this->size_--].~T();
 }
 
 template <typename T>
@@ -414,3 +445,5 @@ void Vector<T>::swap(Vector& obj) {
   std::swap(this->capacity_, obj.capacity_);
   std::swap(this->data_, obj.data_);
 }
+
+}  // namespace utils

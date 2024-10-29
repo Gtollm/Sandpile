@@ -1,16 +1,21 @@
 #pragma once
 
 #include <cstddef>
+#include <initializer_list>
 #include <iterator>
+
+namespace utils {
 
 template <typename T>
 class Vector {
  public:
   // Constructors / Destructor
   Vector();
-  explicit Vector(std::size_t size);
+  Vector(std::size_t size, const T& val = T());
+  Vector(const std::initializer_list<T>& list);
   Vector(const Vector& obj);
   Vector<T>& operator=(const Vector<T>& obj);
+  Vector<T>& operator=(const std::initializer_list<T>& list);
   ~Vector();
   // Iterators:
   class Iterator {
@@ -47,7 +52,7 @@ class Vector {
     pointer current_;
   };
   template <class InputIterator>
-  Vector(const InputIterator& begin, const InputIterator& end);
+  explicit Vector(const InputIterator& begin, const InputIterator& end);
   Iterator begin();
   const Iterator begin() const;
   Iterator end();
@@ -91,4 +96,5 @@ class Vector {
   std::size_t capacity_;
 };
 
+}  // namespace utils
 #include "vector.tpp"
