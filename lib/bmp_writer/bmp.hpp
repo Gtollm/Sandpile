@@ -14,6 +14,7 @@ class BmpWriter {
                                      0x800080,  // Purple
                                      0xFFFF00,  // Yellow
                                      0x000000};
+  const char* dir_name;
 
 #pragma pack(push, 1)
   struct BMPHeader {
@@ -54,6 +55,7 @@ class BmpWriter {
         }) {}
   void WriteBmp(const char* filename,
                 const utils::Matrix<uint64_t>& pixelData);
-  char* GetPath(const char* path_dir, const char* file_name, int);
-  void CreateDir(const char* dir_name);
+  char* GetPath(const char* file_name, int);
+  void CreateDir();
+  void SetDir(const char* dir_name);
 };

@@ -11,7 +11,6 @@
 #include "lib/matrix/matrix.hpp"
 #include "sandpile.hpp"
 
-const char* kDirName = "images";
 const char* kFileName = "stage";
 constexpr int kSpecialLength = 5;
 
@@ -122,18 +121,19 @@ void Sandpile::AddIfUnsteady(UCoord coord) {
 
 void Sandpile::Scatter(uint64_t max_iter, uint64_t frequency) {
   std::size_t i = 0;
-  if (frequency != 0) {
-    this->writer_->CreateDir(kDirName);
-  }
-
+  this->writer_->CreateDir();
+  char* path;
   while (this->Iterate() && i < max_iter) {
-    char* path = this->writer_->GetPath(kDirName, kFileName, i);
+    path = this->writer_->GetPath(kFileName, i);
     if (frequency != 0 && i % frequency == 1) {
       this->writer_->WriteBmp(path, this->matrix_);
     }
     ++i;
     delete[] path;
   }
+  path = this->writer_->GetPath(kFileName, -1);
+  this->writer_->WriteBmp(path, this->matrix_);
+  delete[] path;
 }
 
 bool Sandpile::Iterate() {

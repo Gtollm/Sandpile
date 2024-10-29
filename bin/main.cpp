@@ -16,23 +16,12 @@ int main(int argc, const char **argv) {
   args.ReadArgs(argc - 1, argv + 1);
   utils::Vector<utils::Vector<std::uint64_t>> v;
 
-  //  0 0 0 0 0 0 0 0 0 0
-  //  0 0 0 0 1 2 1 0 0 0
-  //  0 0 0 3 2 0 2 3 0 0
-  //  0 0 3 0 3 2 3 0 3 0
-  //  0 1 2 3 0 3 0 3 2 1
-  //  0 2 0 2 3 0 3 2 0 2
-  //  0 1 2 3 0 3 0 3 2 1
-  //  0 0 3 0 3 2 3 0 3 0
-  //  0 0 0 3 2 0 2 3 0 0
-  //  0 0 0 0 1 2 1 0 0 0
-
   TsvReader reader;
   BmpWriter writer;
   Sandpile sp(&writer);
 
   reader.ParseTSV(args.GetInput(), &sp);
+  writer.SetDir(args.GetOutput());
   sp.Scatter(args.GetMaxIter(), args.GetFrequency());
-  writer.WriteBmp(args.GetOutput(), sp.GetMatrix());
   return 0;
 }

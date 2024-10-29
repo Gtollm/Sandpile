@@ -77,31 +77,35 @@ void BmpWriter::WriteBmp(const char* filename,
   file.close();
 }
 
-char* BmpWriter::GetPath(const char* path_dir, const char* file_name,
-                         int number) {
-  std::size_t path_len = strlen(path_dir);
+char* BmpWriter::GetPath(const char* file_name, int number) {
+  std::size_t path_len = strlen(this->dir_name);
   std::size_t file_len = strlen(file_name);
-  std::size_t total_len = path_len + file_len + 20 + 2;
+  std::size_t total_len = path_len + file_len + 52 + 2;
   char* full_path = new char[total_len];
 
-  strcpy(full_path, path_dir);
+  strcpy(full_path, this->dir_name);
 
-  if (path_len > 0 && path_dir[path_len - 1] != '/') {
+  if (path_len > 0 && this->dir_name[path_len - 1] != '/') {
     strcat(full_path, "/");
   }
-
   char new_file_name[256];
-  snprintf(new_file_name, sizeof(new_file_name), "%s_%d.bmp", file_name,
-           number);
-
+  if (number != -1) {
+    snprintf(new_file_name, sizeof(new_file_name), "%s_%d.bmp", file_name,
+             number);
+  } else {
+    snprintf(new_file_name, sizeof(new_file_name), "%s_complete.bmp",
+             file_name);
+  }
   strcat(full_path, new_file_name);
-
   return full_path;
 }
-void BmpWriter::CreateDir(const char* dirname) {
-  if (!std::filesystem::exists(dirname)) {
+
+void BmpWriter::SetDir(const char* dir_name) { this->dir_name = dir_name; }
+
+void BmpWriter::CreateDir() {
+  if (!std::filesystem::exists(this->dir_name)) {
     try {
-      std::filesystem::create_directory(dirname);
+      std::filesystem::create_directory(this->dir_name);
     } catch (const std::filesystem::filesystem_error& e) {
       std::cerr << "Error creating directory: " << e.what() << std::endl;
       return;

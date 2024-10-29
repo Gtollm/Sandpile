@@ -32,5 +32,8 @@
 *.app
 
 # Build
-cache/
+.cache/
 build/
+
+# Mac .DS_Store
+.DS_Store
