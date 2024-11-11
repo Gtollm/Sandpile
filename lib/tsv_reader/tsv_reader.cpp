@@ -28,11 +28,17 @@ void TsvReader::ParseTSV(const char* filename, Sandpile* pile) {
   }
 
   char* line = new char[kMLineLength];
+  bool first = true;
   while (file.getline(line, kMLineLength)) {
     char* ptr = line;
     uint16_t x = FindElement<uint16_t>(ptr);
     uint16_t y = FindElement<uint16_t>(ptr);
     uint64_t val = FindElement<uint64_t>(ptr);
+    if (first) {
+      pile->GetMatrix().SetXNormalization(-x);
+      pile->GetMatrix().SetYNormalization(-y);
+      first = false;
+    }
     pile->SetPoint(x, y, val);
     if (val > 4) {
       pile->AddToUnsteady(x, y);

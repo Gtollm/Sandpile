@@ -30,7 +30,7 @@ class Matrix {
   T GetElement(std::size_t row, std::size_t collumn) const;
   std::size_t GetWidth() const;
   std::size_t GetHeight() const;
-  std::pair<std::size_t, std::size_t> GetNormalization() const;
+  std::pair<std::int64_t, std::int64_t> GetNormalization() const;
   std::int16_t GetXNormalized(std::int16_t x) const;
   std::int16_t GetYNormalized(std::int16_t y) const;
   T& at(std::size_t row, std::size_t collumn);
@@ -39,16 +39,16 @@ class Matrix {
   void SetElement(std::size_t row, std::size_t collumn, const T& val);
   void SetUElement(std::int16_t urow, std::int16_t ucollumn, const T& val);
   void SetRow(std::size_t row, const T& val);
-  void SetNormalization(std::size_t x, std::size_t y);
-  void SetXNormalization(std::size_t x);
-  void SetYNormalization(std::size_t x);
-  std::pair<std::size_t, std::size_t> Normalize(std::size_t x,
-                                                std::size_t y);
+  void SetNormalization(std::int64_t x, std::int64_t y);
+  void SetXNormalization(std::int64_t x);
+  void SetYNormalization(std::int64_t x);
+  std::pair<std::int64_t, std::int64_t> Normalize(std::int64_t x,
+                                                  std::int64_t y);
 
  private:
   Vector<Vector<T>> data_;
-  std::int16_t x_norm;
-  std::int16_t y_norm;
+  std::int32_t x_norm;
+  std::int32_t y_norm;
 
   inline void ExtendRight(std::size_t size);
   inline void ExtendLeft(std::size_t size);

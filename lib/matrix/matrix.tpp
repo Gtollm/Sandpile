@@ -125,7 +125,7 @@ std::size_t Matrix<T>::GetHeight() const {
 }
 
 template <typename T>
-std::pair<std::size_t, std::size_t> Matrix<T>::GetNormalization() const {
+std::pair<std::int64_t, std::int64_t> Matrix<T>::GetNormalization() const {
   return {this->x_norm, this->y_norm};
 }
 
@@ -172,24 +172,24 @@ void Matrix<T>::SetRow(std::size_t row, const T& val) {
 }
 
 template <typename T>
-void Matrix<T>::SetNormalization(std::size_t x, std::size_t y) {
+void Matrix<T>::SetNormalization(std::int64_t x, std::int64_t y) {
   this->x_norm = x;
   this->y_norm = y;
 }
 
 template <typename T>
-void Matrix<T>::SetXNormalization(std::size_t x) {
+void Matrix<T>::SetXNormalization(std::int64_t x) {
   this->x_norm = x;
 }
 
 template <typename T>
-void Matrix<T>::SetYNormalization(std::size_t y) {
+void Matrix<T>::SetYNormalization(std::int64_t y) {
   this->y_norm = y;
 }
 
 template <typename T>
-std::pair<std::size_t, std::size_t> Matrix<T>::Normalize(std::size_t x,
-                                                         std::size_t y) {
+std::pair<std::int64_t, std::int64_t> Matrix<T>::Normalize(std::int64_t x,
+                                                           std::int64_t y) {
   return {x + x_norm, y + y_norm};
 }
 
